@@ -1,4 +1,6 @@
 using GestaoDeUsinas.Context;
+using GestaoDeUsinas.Interfaces;
+using GestaoDeUsinas.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +33,9 @@ namespace GestaoDeUsinas
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddTransient<IUsinasRepository, UsinasRepository>();
+            services.AddTransient<IFornecedoresRepository, FornecedoresRepository>();
+
             services.AddControllersWithViews();
         }
 
@@ -58,7 +63,7 @@ namespace GestaoDeUsinas
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Usinas}/{action=Index}/{id?}");
             });
         }
     }

@@ -12,7 +12,8 @@ namespace GestaoDeUsinas.Models
         //Join com a entidade de fornecedor
         public Fornecedor Fornecedor { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Esse campo é obrigatório!")]
+        [Display(Name = "UC da usina")]
         public string UCusina { get; set; }
 
         [Required]

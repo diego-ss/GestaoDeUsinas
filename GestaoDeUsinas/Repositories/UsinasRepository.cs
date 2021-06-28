@@ -23,7 +23,7 @@ namespace GestaoDeUsinas.Repositories
         /// </summary>
         /// <param name="usina">usina a ser adicionada</param>
         /// <returns></returns>
-        public async Task<bool> AddUsina(Usina usina)
+        public async Task<bool> AddUsinaAsync(Usina usina)
         {
             await _context.Usinas.AddAsync(usina);
             return (await _context.SaveChangesAsync()) > 0;
@@ -38,9 +38,9 @@ namespace GestaoDeUsinas.Repositories
         /// Listagem de todas as usinas do banco de dados
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Usina>> GetUsinas()
+        public async Task<IEnumerable<Usina>> GetUsinasAsync()
         {
-            return await _context.Usinas.ToListAsync();
+            return await _context.Usinas.Include(us=>us.Fornecedor).ToListAsync();
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace GestaoDeUsinas.Repositories
         /// </summary>
         /// <param name="Ativo"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<Usina>> GetUsinasByAtivo(bool Ativo)
+        public async Task<IEnumerable<Usina>> GetUsinasByAtivoAsync(bool Ativo)
         {
             return await _context.Usinas.AsNoTracking().Where(us => us.Ativo).ToListAsync();
         }
@@ -58,9 +58,14 @@ namespace GestaoDeUsinas.Repositories
         /// </summary>
         /// <param name="FornecedorId">Identificação do fornecedor</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Usina>> GetUsinasByFornecedor(int FornecedorId)
+        public async Task<IEnumerable<Usina>> GetUsinasByFornecedorAsync(int FornecedorId)
         {
             return await _context.Usinas.AsNoTracking().Where(us => us.FornecedorId == FornecedorId).ToListAsync();
+        }
+
+        public async Task<Usina> FindUsinaAsync(Usina usina)
+        {
+            return await _context.Usinas.AsNoTracking().FirstOrDefaultAsync(us => us.FornecedorId == usina.FornecedorId && us.UCusina == usina.UCusina);
         }
 
         public Task<bool> UpdateUsina(Usina usina)

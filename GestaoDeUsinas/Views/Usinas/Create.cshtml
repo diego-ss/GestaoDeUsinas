@@ -1,0 +1,61 @@
+﻿@model GestaoDeUsinas.Models.Usina
+
+@{
+    ViewData["Title"] = "Cadastro de usinas";
+}
+
+<h5>@ViewData["Title"]</h5>
+
+<hr />
+@if (ViewBag.CreateMessage != null)
+{
+    <div class='alert alert-danger alert-dismissable' id='alert'><button type='button' class='close' data-dismiss='alert'>×</button><strong>Ops! </strong>@ViewBag.CreateMessage</div>
+}
+
+<div class="col-md-4">
+    <form asp-action="Create" method="post">
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="ccustom-control-input custom-control-input-success" asp-for="Ativo" /> @Html.DisplayNameFor(model => model.Ativo)
+            </label>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Fornecedores</label>
+            <input asp-for="FornecedorId" type="hidden" name="FornecedorId" id="FornecedorId" />
+            <select class="custom-select my-1 mr-sm-2" onchange="select_onchange(this)" name="fornecedores" id="fornecedores">
+                <option value="" disabled selected>Selecione</option>
+
+                @foreach (var fornecedor in (ViewBag.Fornecedores as IEnumerable<Fornecedor>))
+                {
+                    <option value="@fornecedor.Id">@Html.DisplayFor(modelItem => fornecedor.Nome)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="UCusina" class="control-label"></label>
+            <input asp-for="UCusina" id="UCusina" class="form-control" />
+            <span asp-validation-for="UCusina" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+
+    function select_onchange(sel) {
+        var val = sel.value;
+        document.getElementById("FornecedorId").value = val;
+    }
+</script>

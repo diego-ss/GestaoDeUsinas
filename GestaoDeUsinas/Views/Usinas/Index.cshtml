@@ -1,0 +1,89 @@
+﻿@model IEnumerable<GestaoDeUsinas.Models.Usina>
+
+@{
+    ViewData["Title"] = "Listagem de usinas de Geração Distribuída";
+}
+
+<h4>@ViewData["Title"]</h4>
+<hr />
+
+
+<div class="container-fluid col-12">
+    <form class="form-inline" id="filtro" method="get" asp-action="Index">
+        <label for="fornecedor">Fornecedor:</label>
+        <input type="hidden" name="fornecedorId" id="fornecedorId" />
+        <select class="custom-select my-1 mr-sm-2 ml-2" name="fornecedor" onchange="select_onchange(this)" id="fornecedor">
+            <option value="" disabled selected>Selecione</option>
+
+            @foreach (var fornecedor in (ViewBag.Fornecedores as IEnumerable<Fornecedor>))
+            {
+                <option value="@fornecedor.Id">@Html.DisplayFor(modelItem => fornecedor.Nome)</option>
+            }
+        </select>
+
+        <label class="ml-4" for="ucusina">UC da usina:</label>
+        <input type="text" class="ml-2 form-control" name="ucusina" />
+
+        <label for="ativo" class="ml-4">Ativo:</label>
+        <select class="custom-select my-1 mr-sm-2 ml-2" name="ativo" id="ativo">
+            <option value="@true">Sim</option>
+            <option value="@false">Não</option>
+        </select>
+    </form>
+
+    <div class="row">
+        <div class="col-12">
+            <button class="btn btn-success float-sm-right ml-2" form="filtro">Filtrar</button>
+
+            <form asp-action="Create" method="get" class="form-inline float-sm-right">
+                <button class="btn btn-success">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<table class="table mt-5">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fornecedor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UCusina)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ativo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fornecedor.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UCusina)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ativo)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function select_onchange(sel) {
+        var val = sel.value;
+        document.getElementById("fornecedorId").value = val;
+    }
+</script>
