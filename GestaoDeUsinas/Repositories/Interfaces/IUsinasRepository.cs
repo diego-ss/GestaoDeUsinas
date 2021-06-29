@@ -7,6 +7,7 @@ namespace GestaoDeUsinas.Interfaces
     public interface IUsinasRepository
     {
         Task<IEnumerable<Usina>> GetUsinasAsync();
+        Task<Usina> GetUsinaByIdAsync(int Id);
         Task<IEnumerable<Usina>> GetUsinasByFornecedorAsync(int FornecedorId);
         Task<IEnumerable<Usina>> GetUsinasByAtivoAsync(bool Ativo);
         Task<Usina> FindUsinaAsync(Usina usina);

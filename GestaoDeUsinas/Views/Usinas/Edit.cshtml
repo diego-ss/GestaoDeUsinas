@@ -1,20 +1,23 @@
 ﻿@model GestaoDeUsinas.Models.Usina
 
 @{
-    ViewData["Title"] = "Cadastro de usinas";
+    ViewData["Title"] = "Editar cadastro";
 }
 
 <h5>@ViewData["Title"]</h5>
 
 <hr />
-@if (ViewBag.CreateMessage != null)
+@if (ViewBag.EditMessage != null)
 {
     <div class='alert alert-danger alert-dismissable' id='alert'><button type='button' class='close' data-dismiss='alert'>×</button><strong>Ops! </strong>@ViewBag.CreateMessage</div>
 }
 
+
 <div class="col-md-8 container">
-    <form asp-action="Create" method="post" id="createform">
+    <form asp-action="Edit" id="editform" method="post">
         <div class="form-group form-check col-md-12">
+
+
             <label class="form-check-label">
                 <input type="checkbox" class="ccustom-control-input custom-control-input-success" asp-for="Ativo" /> @Html.DisplayNameFor(model => model.Ativo)
             </label>
@@ -24,7 +27,7 @@
             <label class="control-label col-4">Fornecedores</label>
             <div class="col-8">
                 <input asp-for="FornecedorId" type="hidden" name="FornecedorId" id="FornecedorId" />
-                <select class="form-control" onchange="select_onchange(this)" name="fornecedores" id="fornecedores">
+                <select asp-for="FornecedorId" class="form-control" onchange="select_onchange(this)" name="fornecedores" id="fornecedores">
                     <option value="" disabled selected>Selecione</option>
 
                     @foreach (var fornecedor in (ViewBag.Fornecedores as IEnumerable<Fornecedor>))
@@ -48,7 +51,7 @@
     </form>
 
     <div class="float-lg-right">
-        <input type="submit" value="Salvar" class="btn btn-success" form="createform" />
+        <input type="submit" class="btn btn-success" id="editButton" form="editform" value="Salvar" />
         <a href="/Usinas" class="btn btn-danger">Fechar</a>
     </div>
 </div>
@@ -66,4 +69,5 @@
         var val = sel.value;
         document.getElementById("FornecedorId").value = val;
     }
+
 </script>

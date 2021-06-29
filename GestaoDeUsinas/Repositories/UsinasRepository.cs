@@ -65,12 +65,24 @@ namespace GestaoDeUsinas.Repositories
 
         public async Task<Usina> FindUsinaAsync(Usina usina)
         {
+            if (usina == null || usina.Id == 0)
+                throw new Exception("Parâmetros inválidos!");
+
             return await _context.Usinas.AsNoTracking().FirstOrDefaultAsync(us => us.FornecedorId == usina.FornecedorId && us.UCusina == usina.UCusina);
         }
 
-        public Task<bool> UpdateUsina(Usina usina)
+        public async Task<bool> UpdateUsina(Usina usina)
         {
-            throw new NotImplementedException();
+            if (usina == null || usina.Id == 0)
+                throw new Exception("Parâmetros inválidos!");
+
+            _context.Usinas.Update(usina);
+            return (await _context.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<Usina> GetUsinaByIdAsync(int Id)
+        {
+            return await _context.Usinas.AsNoTracking().FirstOrDefaultAsync(us=>us.Id == Id);
         }
     }
 }

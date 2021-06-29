@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "library": "bootstrap-switch@3.3.5",
+      "destination": "wwwroot/bootstrap-switch/"
+    }
+  ]
+}

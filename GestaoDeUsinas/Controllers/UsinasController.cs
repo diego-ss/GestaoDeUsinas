@@ -22,35 +22,20 @@ namespace GestaoDeUsinas.Controllers
             this._fornecedoresRepository = fornecedoresRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? fornecedorId, bool? ativo)
         {
             try
             {
-                var usinas = await _usinasRepository.GetUsinasAsync();
-
                 if (_fornecedores == null)
                     _fornecedores = await _fornecedoresRepository.GetFornecedores();
 
-                ViewBag.Fornecedores = _fornecedores;
-                return View(usinas);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500);
-            }
-        }
-
-        [Route("Usinas/Pesquisa")]
-        public async Task<IActionResult> Index(int? fornecedorId, bool ativo)
-        {
-            try
-            {
                 var usinas = await _usinasRepository.GetUsinasAsync();
 
-                if (fornecedorId == null)
+                if (fornecedorId != null)
+                    usinas = usinas.Where(x => x.FornecedorId == fornecedorId);
+
+                if (ativo != null)
                     usinas = usinas.Where(x => x.Ativo == ativo);
-                else
-                    usinas = usinas.Where(x => x.FornecedorId == fornecedorId && x.Ativo == ativo);
 
                 ViewBag.Fornecedores = _fornecedores;
                 return View(usinas);
@@ -96,6 +81,44 @@ namespace GestaoDeUsinas.Controllers
             ViewBag.Fornecedores = fornecedores;
 
             return View();
+        }
+        
+        public async Task<IActionResult> Edit(int id)
+        {
+            var usina = await _usinasRepository.GetUsinaByIdAsync(id);
+
+            var fornecedores = await _fornecedoresRepository.GetFornecedores();
+            ViewBag.Fornecedores = fornecedores;
+
+            return View(usina);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Usina usina)
+        {
+            try
+            {
+                var findUsina = await _usinasRepository.GetUsinaByIdAsync(usina.Id);
+
+                if(findUsina == null)
+                {
+                    ViewBag.EditMessage = "Usina não localizada.";
+                    return BadRequest();
+                }
+
+                bool updated = await _usinasRepository.UpdateUsina(usina);
+
+                if(updated)
+                    return RedirectToAction("Index");
+
+                ViewBag.EditMessage = "Falha ao atualizar usina";
+                return View();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "Ocorreu um erro: " + ex.Message);
+            }
         }
 
         private IActionResult LoadCreateView(string ErroCriacao = null)
