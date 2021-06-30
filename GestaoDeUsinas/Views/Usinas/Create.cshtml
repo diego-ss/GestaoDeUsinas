@@ -14,17 +14,16 @@
 
 <div class="col-md-8 container">
     <form asp-action="Create" method="post" id="createform">
-        <div class="form-group form-check col-md-12">
+        <div class="form-group form-check">
             <label class="form-check-label">
-                <input type="checkbox" class="ccustom-control-input custom-control-input-success" asp-for="Ativo" /> @Html.DisplayNameFor(model => model.Ativo)
+                <input class="form-check-input" asp-for="Ativo" /> @Html.DisplayNameFor(model => model.Ativo)
             </label>
         </div>
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group form-inline col-md-12">
-            <label class="control-label col-4">Fornecedores</label>
-            <div class="col-8">
+        <div class="form-group form-inline">
+            <label class="control-label">Fornecedores</label>
                 <input asp-for="FornecedorId" type="hidden" name="FornecedorId" id="FornecedorId" />
-                <select class="form-control" onchange="select_onchange(this)" name="fornecedores" id="fornecedores">
+                <select class="form-control ml-2" onchange="select_onchange(this)" name="fornecedores" id="fornecedores">
                     <option value="" disabled selected>Selecione</option>
 
                     @foreach (var fornecedor in (ViewBag.Fornecedores as IEnumerable<Fornecedor>))
@@ -32,18 +31,12 @@
                         <option value="@fornecedor.Id">@Html.DisplayFor(modelItem => fornecedor.Nome)</option>
                     }
                 </select>
-            </div>
 
         </div>
-        <div class="form-group form-inline col-md-12">
-            <div class="col-4">
+        <div class="form-group form-inline ">
                 <label asp-for="UCusina" class="control-label"></label>
-            </div>
-            <div class="col-8 container-fluid">
-                <input asp-for="UCusina" id="UCusina" class="form-control" />
+                <input asp-for="UCusina" id="UCusina" class="form-control ml-3" />
                 <span asp-validation-for="UCusina" class="text-danger"></span>
-            </div>
-
         </div>
     </form>
 

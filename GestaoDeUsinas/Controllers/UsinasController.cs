@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace GestaoDeUsinas.Controllers
 {
@@ -22,8 +23,12 @@ namespace GestaoDeUsinas.Controllers
             this._fornecedoresRepository = fornecedoresRepository;
         }
 
-        public async Task<IActionResult> Index(int? fornecedorId, bool? ativo)
+        public async Task<IActionResult> Index(int? fornecedorId, string ucusina, bool? ativo, int? pagina)
         {
+            //parâmetros de paginação
+            int qtdPorPagina = 4; // qtd máxima de itens por página
+            int numeroPagina = (pagina ?? 1); // página atual
+
             try
             {
                 if (_fornecedores == null)
@@ -37,8 +42,9 @@ namespace GestaoDeUsinas.Controllers
                 if (ativo != null)
                     usinas = usinas.Where(x => x.Ativo == ativo);
 
+                //passando a lista de fornecedores para a view
                 ViewBag.Fornecedores = _fornecedores;
-                return View(usinas);
+                return View(await usinas.ToPagedListAsync(numeroPagina, qtdPorPagina));
             }
             catch (Exception ex)
             {
@@ -99,6 +105,9 @@ namespace GestaoDeUsinas.Controllers
         {
             try
             {
+                if (usina == null || usina.Id == 0)
+                    return BadRequest("Parâmetros inválidos!");
+
                 var findUsina = await _usinasRepository.GetUsinaByIdAsync(usina.Id);
 
                 if(findUsina == null)
@@ -114,6 +123,44 @@ namespace GestaoDeUsinas.Controllers
 
                 ViewBag.EditMessage = "Falha ao atualizar usina";
                 return View();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "Ocorreu um erro: " + ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> Delete(int Id)
+        {
+            try
+            {
+                var usina = await _usinasRepository.GetUsinaByIdAsync(Id);
+
+                var fornecedores = await _fornecedoresRepository.GetFornecedores();
+                ViewBag.Fornecedores = fornecedores;
+
+                return View(usina);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Ocorreu um erro: " + ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUsina(int Id)
+        {
+            try
+            {
+                if (Id == 0)
+                    return BadRequest("Parâmetros inválidos!");
+
+                var deleted = await _usinasRepository.DeleteUsina(Id);
+
+                if(deleted)
+                    return RedirectToAction("Index");
+
+                return StatusCode(500, "Falha ao deletar");
             }
             catch(Exception ex)
             {

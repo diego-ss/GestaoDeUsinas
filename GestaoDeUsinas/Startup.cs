@@ -33,6 +33,7 @@ namespace GestaoDeUsinas
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            //inserindo serviços dos repositórios para injeção de dependências
             services.AddTransient<IUsinasRepository, UsinasRepository>();
             services.AddTransient<IFornecedoresRepository, FornecedoresRepository>();
 

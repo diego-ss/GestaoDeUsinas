@@ -1,4 +1,5 @@
-﻿@model IEnumerable<GestaoDeUsinas.Models.Usina>
+﻿@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<GestaoDeUsinas.Models.Usina>
 
 @{
     ViewData["Title"] = "Listagem de usinas de Geração Distribuída";
@@ -10,26 +11,26 @@
 
 <div class="container-fluid col-12">
     <form class="form-inline col-12" id="filtro" method="get" asp-action="Index">
-            <label for="fornecedor">Fornecedor:</label>
-            <input type="hidden" name="fornecedorId" id="fornecedorId" />
-            <select class="custom-select my-1 mr-sm-2 ml-2" name="fornecedor" onchange="select_onchange(this)" id="fornecedor">
-                <option value="" disabled selected>Selecione</option>
+        <label for="fornecedor">Fornecedor:</label>
+        <input type="hidden" name="fornecedorId" id="fornecedorId" />
+        <select class="custom-select my-1 mr-sm-2 ml-2" name="fornecedor" onchange="select_onchange(this)" id="fornecedor">
+            <option value="" disabled selected>Selecione</option>
 
-                @foreach (var fornecedor in (ViewBag.Fornecedores as IEnumerable<Fornecedor>))
-                {
-                    <option value="@fornecedor.Id">@Html.DisplayFor(modelItem => fornecedor.Nome)</option>
-                }
-            </select>
+            @foreach (var fornecedor in (ViewBag.Fornecedores as IEnumerable<Fornecedor>))
+            {
+                <option value="@fornecedor.Id">@Html.DisplayFor(modelItem => fornecedor.Nome)</option>
+            }
+        </select>
 
-            <label class="ml-4" for="ucusina">UC da usina:</label>
-            <input type="text" class="ml-2 form-control" name="ucusina" />
+        <label class="ml-4" for="ucusina">UC da usina:</label>
+        <input type="text" class="ml-2 form-control" name="ucusina" />
 
-            <label for="ativo" class="ml-4">Ativo:</label>
-            <select class="custom-select my-1 mr-sm-2 ml-2" name="ativo" id="ativo">
-                <option value="@null" disabled selected>Selecione</option>
-                <option value="@true">Sim</option>
-                <option value="@false">Não</option>
-            </select>
+        <label for="ativo" class="ml-4">Ativo:</label>
+        <select class="custom-select my-1 mr-sm-2 ml-2" name="ativo" id="ativo">
+            <option value="@null" disabled selected>Selecione</option>
+            <option value="@true">Sim</option>
+            <option value="@false">Não</option>
+        </select>
 
     </form>
 
@@ -45,15 +46,17 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Fornecedor)
+                Fornecedor
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UCusina)
+                UC da Usina
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ativo)
+                Ativo
             </th>
-            <th></th>
+            <th>
+                Ações
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -77,6 +80,10 @@
         }
     </tbody>
 </table>
+
+<div class="float-right">
+    @Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina }))
+</div>
 
 <script>
     function select_onchange(sel) {
